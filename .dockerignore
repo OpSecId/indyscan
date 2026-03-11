@@ -16,6 +16,7 @@
 **/*.MD
 **/*.md
 **/*.sh
+!scripts/railway-start.sh
 **/logs
 
 

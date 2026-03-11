@@ -1,0 +1,51 @@
+# IndyScan API + Webapp in one container for Railway (minimal deploy).
+# Requires ES_URL and NETWORKS_CONFIG_PATH (or baked default). Elasticsearch = separate service.
+
+FROM node:16-alpine AS api-build
+WORKDIR /app
+RUN apk add --no-cache python3 make g++
+COPY indyscan-storage ./indyscan-storage
+COPY indyscan-api/package*.json ./indyscan-api/
+RUN cd indyscan-storage && npm ci --only=production
+RUN cd indyscan-api && npm ci --only=production
+COPY indyscan-api ./indyscan-api
+
+# Webapp uses node-sass (Node 12 + python2 for node-gyp); match original webapp Dockerfile
+FROM node:12.14.0-alpine3.9 AS webapp-build
+WORKDIR /app
+RUN apk add --no-cache python2 make g++
+COPY indyscan-api-client ./indyscan-api-client
+COPY indyscan-txtype ./indyscan-txtype
+RUN cd indyscan-api-client && npm ci
+RUN cd indyscan-txtype && npm ci --only=production
+COPY indyscan-webapp/package*.json ./indyscan-webapp/
+RUN cd indyscan-webapp && npm install --legacy-peer-deps
+COPY indyscan-webapp ./indyscan-webapp
+RUN cd indyscan-webapp && npm run build && npm prune --production --legacy-peer-deps
+
+FROM node:16-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+# API runs on 3708 internally; webapp uses PORT (Railway)
+ENV API_PORT=3708
+ENV PORT=3707
+
+RUN apk add --no-cache dumb-init
+
+COPY --from=api-build /app/indyscan-storage ./indyscan-storage
+COPY --from=api-build /app/indyscan-api ./indyscan-api
+COPY --from=webapp-build /app/indyscan-api-client ./indyscan-api-client
+COPY --from=webapp-build /app/indyscan-txtype ./indyscan-txtype
+COPY --from=webapp-build /app/indyscan-webapp ./indyscan-webapp
+
+# Default networks config (single network; override via NETWORKS_CONFIG_PATH or env at runtime)
+RUN mkdir -p /app/config
+COPY config/networks-default.json /app/config/networks.json
+
+# Start script: run API in background, then webapp (foreground so it gets PORT and signals)
+COPY scripts/railway-start.sh /app/railway-start.sh
+RUN chmod +x /app/railway-start.sh
+
+EXPOSE 3707 3708
+
+CMD ["dumb-init", "/app/railway-start.sh"]

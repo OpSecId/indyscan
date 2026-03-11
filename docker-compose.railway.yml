@@ -1,0 +1,24 @@
+# Minimal IndyScan for Railway: 2 services (Elasticsearch + API+Webapp).
+# Deploy: connect repo to Railway, use this compose or add ES as separate service.
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    # Railway: add a volume for persistence if desired
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.railway
+    environment:
+      ES_URL: http://elasticsearch:9200
+      NETWORKS_CONFIG_PATH: /app/config/networks.json
+    ports:
+      - "3707:3707"
+    depends_on:
+      - elasticsearch

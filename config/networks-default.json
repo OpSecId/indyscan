@@ -1,0 +1,15 @@
+[
+  {
+    "id": "INDYSCANPOOL",
+    "display": "IndyscanPool",
+    "ui": {
+      "priority": 1,
+      "display": "Indyscan Pool",
+      "description": "Indy network (populate by running the daemon)"
+    },
+    "es": {
+      "index": "txs-indyscanpool"
+    },
+    "description": "Default network for Railway deploy."
+  }
+]
