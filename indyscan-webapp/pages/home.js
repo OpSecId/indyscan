@@ -23,9 +23,14 @@ class HomePage extends Component {
     const versionRes = await fetch(`${baseUrl}/version`)
     const version = (await versionRes.json()).version
     const networkDetails = await getNetwork(baseUrl, network)
-    const domainTxs = await getTxs(baseUrl, network, 'domain', 0, 13, [], 'serialized')
-    const poolTxs = await getTxs(baseUrl, network, 'pool', 0, 13, [], 'serialized')
-    const configTxs = await getTxs(baseUrl, network, 'config', 0, 13, [], 'serialized')
+    const [domainTxsRaw, poolTxsRaw, configTxsRaw] = await Promise.all([
+      getTxs(baseUrl, network, 'domain', 0, 13, [], 'serialized'),
+      getTxs(baseUrl, network, 'pool', 0, 13, [], 'serialized'),
+      getTxs(baseUrl, network, 'config', 0, 13, [], 'serialized')
+    ])
+    const domainTxs = Array.isArray(domainTxsRaw) ? domainTxsRaw : []
+    const poolTxs = Array.isArray(poolTxsRaw) ? poolTxsRaw : []
+    const configTxs = Array.isArray(configTxsRaw) ? configTxsRaw : []
     return {
       features,
       networkDetails,
@@ -41,15 +46,15 @@ class HomePage extends Component {
   constructor (props) {
     super()
     this.state = {
-      domainTxs: props.domainTxs,
-      poolTxs: props.poolTxs,
-      configTxs: props.configTxs
+      domainTxs: Array.isArray(props.domainTxs) ? props.domainTxs : [],
+      poolTxs: Array.isArray(props.poolTxs) ? props.poolTxs : [],
+      configTxs: Array.isArray(props.configTxs) ? props.configTxs : []
     }
   }
 
   addNewDomainTx (txData) {
     let domainTxs = _.cloneDeep(this.state.domainTxs)
-    if (domainTxs[0].imeta.seqNo === txData.imeta.seqNo) {
+    if (domainTxs.length > 0 && domainTxs[0] && domainTxs[0].imeta && domainTxs[0].imeta.seqNo === txData.imeta.seqNo) {
       // When scanner runs too fast (it might happen that one transaction in daemon is processed twice, causing
       // duplicate notification about the same transaction from UI perspective. If we'd add this transaction,
       // we bump into problem with animations, because 2 transactions in list would have generated the same
@@ -66,7 +71,7 @@ class HomePage extends Component {
 
   addNewConfigTx (txData) {
     let configTxs = _.cloneDeep(this.state.configTxs)
-    if (configTxs[0].imeta.seqNo === txData.imeta.seqNo) {
+    if (configTxs.length > 0 && configTxs[0] && configTxs[0].imeta && configTxs[0].imeta.seqNo === txData.imeta.seqNo) {
       return
     }
     configTxs.unshift(txData)
@@ -78,7 +83,7 @@ class HomePage extends Component {
 
   addNewPoolTx (txData) {
     let poolTxs = _.cloneDeep(this.state.poolTxs)
-    if (poolTxs[0].imeta.seqNo === txData.imeta.seqNo) {
+    if (poolTxs.length > 0 && poolTxs[0] && poolTxs[0].imeta && poolTxs[0].imeta.seqNo === txData.imeta.seqNo) {
       return
     }
     poolTxs.unshift(txData)
@@ -137,9 +142,9 @@ class HomePage extends Component {
 
   componentWillReceiveProps (newProps) {
     console.log(`componentWillReceiveProps`)
-    this.setState({ domainTxs: newProps.domainTxs })
-    this.setState({ poolTxs: newProps.poolTxs })
-    this.setState({ configTxs: newProps.configTxs })
+    this.setState({ domainTxs: Array.isArray(newProps.domainTxs) ? newProps.domainTxs : [] })
+    this.setState({ poolTxs: Array.isArray(newProps.poolTxs) ? newProps.poolTxs : [] })
+    this.setState({ configTxs: Array.isArray(newProps.configTxs) ? newProps.configTxs : [] })
     this.setState({ animateFirst: false })
   }
 

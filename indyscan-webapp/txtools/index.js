@@ -112,6 +112,9 @@ const txDataDescriptiveExtractors = {
 }
 
 export function extractTxDataBasic (tx) {
+  if (!tx || !tx.imeta) {
+    return { seqNo: null, txnId: null, txnTimeIso8601: null, typeName: 'Unknown', from: null, indexedFields: false }
+  }
   const { seqNo } = tx.imeta
   let txnId, txnTimeIso8601, typeName, from, indexedFields
   const serializedOriginal = tx?.idata?.json || tx?.idata?.serialized?.idata?.json
