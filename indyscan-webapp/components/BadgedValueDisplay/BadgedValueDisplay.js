@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './BadgedValueDisplay.scss'
 import { Icon, Label, List } from 'semantic-ui-react'
 import ReactTooltip from 'react-tooltip'
 import { renderValuesAsBadges } from '../Common'

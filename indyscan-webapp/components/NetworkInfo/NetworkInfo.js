@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './NetworkInfo.scss'
 import { Grid, GridColumn, GridRow } from 'semantic-ui-react'
 
 class NetworkInfo extends Component {

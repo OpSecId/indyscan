@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import '../scss/style.scss'
 import { getNetwork, getTxs } from 'indyscan-api-client'
 import { getBaseUrl, getBaseUrlForServerFetch } from '../routing'
-import { Grid, GridColumn, GridRow } from 'semantic-ui-react'
 import PageHeader from '../components/PageHeader/PageHeader'
 import TxPreviewList from '../components/TxPreviewList/TxPreviewList'
 import Footer from '../components/Footer/Footer'
@@ -13,6 +11,7 @@ import { assureWebsocketClient, getWebsocketClient } from '../context/socket-cli
 import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
 import SubledgerHeader from '../components/SubledgerHeader/SubledgerHeader'
 import { SOCKETIO_EVENT } from '../sockets/constants'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 
 class HomePage extends Component {
   static async getInitialProps ({ req, query }) {
@@ -198,61 +197,47 @@ class HomePage extends Component {
     const isInteractive = (!!this.state.activeWsRoom)
     return (
       <div>
-        <Grid>
-          <GridRow style={{ backgroundColor: 'white', marginBottom: '-1em' }}>
-            <GridColumn>
-              <PageHeader page='home' network={network} baseUrl={baseUrl}/>
-            </GridColumn>
-          </GridRow>
-        </Grid>
+        <div className="bg-white mb-[-1em]">
+          <div className="container mx-auto px-4">
+            <PageHeader page='home' network={network} baseUrl={baseUrl}/>
+          </div>
+        </div>
         <NetworkInfo networkDetails={networkDetails}/>
         <CSSTransition key={network} appear={true} in={true} timeout={300}
                        classNames="txsanimation">
-          <Grid columns={3} container doubling stackable>
-            <GridRow>
-              <GridColumn align='left'>
-                <GridRow align='left'>
-                  <SubledgerHeader isInteractive={isInteractive} subledger='Domain' progress={scanProgressDomain}/>
-                </GridRow>
-                <GridRow centered style={{ marginTop: '2em' }}>
-                  <Grid.Column>
-                    <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={domainTxs}
-                                   network={network} subledger='domain'/>
-                  </Grid.Column>
-                </GridRow>
-              </GridColumn>
-              <GridColumn align='center'>
-                <GridRow align='left'>
-                  <SubledgerHeader isInteractive={isInteractive} subledger='Pool' progress={scanProgressPool}/>
-                </GridRow>
-                <GridRow centered style={{ marginTop: '2em' }}>
-                  <Grid.Column>
-                    <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={poolTxs}
-                                   network={network} subledger='pool'/>
-                  </Grid.Column>
-                </GridRow>
-              </GridColumn>
-              <GridColumn align='right'>
-                <GridRow align='left'>
-                  <SubledgerHeader isInteractive={isInteractive} subledger='Config' progress={scanProgressConfig}/>
-                </GridRow>
-                <GridRow centered style={{ marginTop: '2em' }}>
-                  <Grid.Column>
-                    <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={configTxs}
-                                   network={network} subledger='config'/>
-                  </Grid.Column>
-                </GridRow>
-              </GridColumn>
-            </GridRow>
-          </Grid>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 container mx-auto px-4 mt-8">
+            <Card>
+              <CardHeader className="pb-2">
+                <SubledgerHeader isInteractive={isInteractive} subledger='Domain' progress={scanProgressDomain}/>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={domainTxs}
+                               network={network} subledger='domain'/>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <SubledgerHeader isInteractive={isInteractive} subledger='Pool' progress={scanProgressPool}/>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={poolTxs}
+                               network={network} subledger='pool'/>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <SubledgerHeader isInteractive={isInteractive} subledger='Config' progress={scanProgressConfig}/>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <TxPreviewList animateFirst={this.state.animateFirst} indyscanTxs={configTxs}
+                               network={network} subledger='config'/>
+              </CardContent>
+            </Card>
+          </div>
         </CSSTransition>
-        <Grid>
-          <GridRow>
-            <GridColumn>
-              <Footer displayVersion={this.props.version}/>
-            </GridColumn>
-          </GridRow>
-        </Grid>
+        <div className="container mx-auto px-4 mt-6">
+          <Footer displayVersion={this.props.version}/>
+        </div>
       </div>
     )
   }

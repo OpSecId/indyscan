@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './Navbar.scss'
 import MenuLink from '../MenuLink/MenuLink'
 
 class Navbar extends Component {

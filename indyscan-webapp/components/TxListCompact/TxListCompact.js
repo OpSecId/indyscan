@@ -1,7 +1,6 @@
 import TxListItem from '../TxListItem/TxListItem'
 import { Table, TableBody, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react'
 import React, { Component } from 'react'
-import './TxListCompact.scss'
 
 class TxListCompact extends Component {
   render () {

@@ -3,7 +3,6 @@ import { extractTxDataBasic } from '../../txtools'
 import { ItemGroup } from 'semantic-ui-react'
 import React, { Component } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import './TxPreviewList.scss'
 
 class TxPreviewList extends Component {
 

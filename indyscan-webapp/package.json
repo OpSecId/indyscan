@@ -29,9 +29,12 @@
     ]
   },
   "dependencies": {
-    "@zeit/next-sass": "^1.0.1",
+    "@radix-ui/react-slot": "^1.0.2",
     "awesome-debounce-promise": "^2.1.0",
+    "axios": "^1.6.2",
     "canonical-json": "0.0.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
     "date-format": "^2.0.0",
     "dotenv": "^7.0.0",
     "express": "^4.17.1",
@@ -46,16 +49,14 @@
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.33",
-    "next": "^9.3.6",
-    "next-routes": "^1.4.2",
-    "node-sass": "^4.14.1",
+    "next": "13.5.6",
     "pkginfo": "^0.4.1",
     "query-string": "^6.8.1",
     "raw-loader": "^0.5.1",
     "rc-pagination": "^1.20.1",
-    "react": "^16.8.6",
+    "react": "^18.2.0",
     "react-circular-progressbar": "^2.0.3",
-    "react-dom": "^16.8.6",
+    "react-dom": "^18.2.0",
     "react-epic-spinners": "^0.4.1",
     "react-json-pretty": "^2.1.0",
     "react-tooltip": "^3.10.0",
@@ -63,10 +64,11 @@
     "semantic-ui-react": "^0.84.0",
     "sleep-promise": "^8.0.1",
     "socket.io-client": "^2.3.1",
+    "tailwind-merge": "^2.2.1",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "autoprefixer": "^8.3.0",
+    "autoprefixer": "^10.4.16",
     "babel-eslint": "^10.1.0",
     "command-line-args": "^5.1.1",
     "command-line-usage": "^5.0.5",
@@ -75,9 +77,13 @@
     "jest": "^27.0.6",
     "jest-cli": "^27.0.6",
     "nodemon": "^1.19.4",
+    "postcss": "^8.4.32",
     "postcss-easy-import": "^3.0.0",
     "postcss-loader": "^2.1.4",
-    "sass-loader": "^7.0.1",
-    "standard": "^14.3.4"
+    "sass": "^1.69.5",
+    "sass-loader": "^13.3.2",
+    "standard": "^14.3.4",
+    "tailwindcss": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7"
   }
 }

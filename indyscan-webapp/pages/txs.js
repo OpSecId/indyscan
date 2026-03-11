@@ -1,4 +1,3 @@
-import '../scss/style.scss'
 import TxListCompact from '../components/TxListCompact/TxListCompact'
 import React, { Component } from 'react'
 import { getTxCount, getTxs } from 'indyscan-api-client'

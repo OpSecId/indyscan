@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './TxPreview.scss'
 import Link from 'next/link'
 import { extractTxDataBasic, secondsToDhms } from '../../txtools'
 // import moment from 'moment'

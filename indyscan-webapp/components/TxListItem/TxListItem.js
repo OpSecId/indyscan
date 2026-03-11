@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './TxListItem.scss'
 import { TableCell, TableRow } from 'semantic-ui-react'
 import Link from 'next/link'
 import ReactTooltip from 'react-tooltip'

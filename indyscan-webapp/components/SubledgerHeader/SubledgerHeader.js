@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './SubledgerHeader.scss'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import { SemipolarSpinner } from 'react-epic-spinners'
 

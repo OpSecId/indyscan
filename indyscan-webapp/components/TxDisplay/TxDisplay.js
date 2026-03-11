@@ -1,5 +1,4 @@
 import React from 'react'
-import './TxDisplay.scss'
 import {
   GridRow,
   Item,

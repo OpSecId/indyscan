@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-import './MenuLink.scss'
 
 class MenuLink extends Component {
   constructor (props) {

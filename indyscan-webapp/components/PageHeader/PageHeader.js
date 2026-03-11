@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './PageHeader.scss'
 import Navbar from '../Navbar/Navbar'
 import { Divider, Grid, GridColumn, GridRow } from 'semantic-ui-react'
 import MenuLink from '../MenuLink/MenuLink'

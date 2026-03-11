@@ -1,4 +1,3 @@
-import '../scss/style.scss'
 import React, { Component } from 'react'
 import { getTx } from 'indyscan-api-client'
 import PageHeader from '../components/PageHeader/PageHeader'

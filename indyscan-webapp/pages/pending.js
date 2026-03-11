@@ -1,4 +1,3 @@
-import '../scss/style.scss'
 import React, { Component } from 'react'
 import { Grid, GridRow } from 'semantic-ui-react'
 import { getBaseUrl } from '../routing'
