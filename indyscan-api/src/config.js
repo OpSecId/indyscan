@@ -39,6 +39,18 @@ if (!fs.existsSync(appConfig.NETWORKS_CONFIG_PATH)) {
 }
 
 const networksConfig = loadNetworkConfigs(appConfig.NETWORKS_CONFIG_PATH)
+if (process.env.INDY_NETWORK_DISPLAY != null && process.env.INDY_NETWORK_DISPLAY !== '') {
+  if (networksConfig[0]) {
+    networksConfig[0].display = process.env.INDY_NETWORK_DISPLAY
+    if (!networksConfig[0].ui) networksConfig[0].ui = {}
+    networksConfig[0].ui.display = process.env.INDY_NETWORK_DISPLAY
+  }
+}
+if (process.env.INDY_NETWORK_DESCRIPTION != null && process.env.INDY_NETWORK_DESCRIPTION !== '') {
+  if (networksConfig[0] && networksConfig[0].ui) {
+    networksConfig[0].ui.description = process.env.INDY_NETWORK_DESCRIPTION
+  }
+}
 logger.info(`Loaded network configurations:\n${JSON.stringify(networksConfig, null, 2)}`)
 
 module.exports.appConfig = appConfig

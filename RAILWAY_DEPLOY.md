@@ -77,12 +77,19 @@ To **populate** the explorer:
 
 3. **As a 3rd Railway service:** New service from same repo, **Dockerfile path** = **`indyscan-daemon/Dockerfile`**. Set variables:
    - **`ES_URL`** = your Elasticsearch private URL (e.g. `http://elasticsearch.railway.internal:9200`).
-   - **`GENESIS_URL`** = public URL of the ledger’s genesis file (e.g. `https://your-von-network.up.railway.app/genesis`). The daemon downloads it at startup.
+   - **`GENESIS_URL`** = URL of the ledger’s genesis file (e.g. `http://von-network.railway.internal:8080/genesis`). The daemon downloads it at startup. **Important:** The genesis file lists the pool’s node addresses. The daemon must be able to connect to those **node ports** (9701, 9703, 9705, 9707) on that host—see **PoolLedgerTimeout** in Troubleshooting if the daemon times out connecting to the ledger.
    - **`WORKER_CONFIGS`** = **`app-configs/railway.json`** (uses `{{{GENESIS_URL}}}` and `{{{ES_URL}}}` from env). Optionally set **`ES_INDEX`** if you use a different index name (default in that config: `txs-indyscanpool`).
 
 No genesis file mount or build needed when using `GENESIS_URL`.
 
 Until the daemon has run and synced, the explorer will show no data.
+
+---
+
+## Naming the ledger
+
+- **Display name (what users see in the UI):** Set **`INDY_NETWORK_DISPLAY`** on the **IndyScan app** service (e.g. `Von Network`, `My Testnet`). Optionally **`INDY_NETWORK_DESCRIPTION`** for the short description. No rebuild needed.
+- **Internal id** (used in URLs and ES index): The default is **`INDYSCANPOOL`** with index **`txs-indyscanpool`**, defined in `config/networks-default.json` and `indyscan-daemon/app-configs/railway.json`. To use a different id (e.g. `VON_NETWORK`), change **`INDY_NETWORK`** and **`ES_INDEX`** in the daemon config (and env) and ensure the app’s networks config has the same `id` and `es.index` (e.g. by building a custom `networks.json` and setting `NETWORKS_CONFIG_PATH`).
 
 ---
 
@@ -123,6 +130,22 @@ The Elasticsearch process runs as user `elasticsearch` (uid 1000). A volume moun
 
 If you don’t need persistence, you can instead remove the volume and use the default image so data is ephemeral.
 
+### `PoolLedgerTimeout` when the daemon connects to the ledger
+
+The daemon uses the **Indy SDK** to connect to the pool: it reads node addresses from the genesis file and opens TCP connections to **node ports** (typically **9701, 9703, 9705, 9707**), not just the HTTP genesis URL.
+
+**Cause:** If your von-network (or other ledger) is deployed with **default settings**, its genesis file lists **`127.0.0.1`** for all nodes and only the **Ledger Browser port** (e.g. 8080) is exposed. The daemon runs in a **different** container, so it cannot reach `127.0.0.1:9701` (that’s inside the von-network container). Result: **PoolLedgerTimeout**.
+
+**Fix:** The ledger service must:
+
+1. **Generate genesis with a reachable hostname**  
+   Set **`IP`** (or **`IPS`**) on the **von-network** service to the hostname the daemon can use (e.g. **`von-network.railway.internal`** so the daemon, in the same Railway project, can resolve and connect).
+
+2. **Expose the Indy node ports**  
+   The daemon must be able to open TCP connections to **9701, 9703, 9705, 9707** on that host. On Railway this usually means configuring the von-network service so these ports are exposed (Railway may support multiple ports or a custom TCP proxy; see Railway docs). If the platform only exposes one port, the daemon cannot reach the pool from another service unless you use a different topology (e.g. run the daemon where the nodes are reachable, or use a public testnet that already exposes node ports).
+
+Until the daemon can reach the pool’s node ports, it will keep logging “Indy Network connection problem … PoolLedgerTimeout” and will retry; workers are built but the ledger-copy workers need an open pool to sync.
+
 ---
 
 ## Variables reference (app container)
@@ -131,6 +154,8 @@ If you don’t need persistence, you can instead remove the volume and use the d
 |----------|----------|-------------|
 | `ES_URL` | Yes | Elasticsearch URL (e.g. `http://elasticsearch:9200` or Railway ES service URL). |
 | `NETWORKS_CONFIG_PATH` | No | Path to networks JSON; default `/app/config/networks.json` (baked single network). |
+| `INDY_NETWORK_DISPLAY` | No | Display name for the ledger in the UI (e.g. `Von Network`). Overrides the first network’s `display` and `ui.display`. |
+| `INDY_NETWORK_DESCRIPTION` | No | Short description for the ledger in the UI. Overrides the first network’s `ui.description`. |
 | `PORT` | Set by Railway | Port the webapp listens on. |
 
 ---
