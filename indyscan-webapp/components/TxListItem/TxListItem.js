@@ -35,7 +35,7 @@ class TxListItem extends Component {
     }
     return (
       <TableRow className='txListItem' style={{ fontSize: '0.8em', height: '100%' }}>
-        <TableCell><Link href={href} as={as}><a>{seqNo}</a></Link></TableCell>
+        <TableCell><Link href={href} as={as}>{seqNo}</Link></TableCell>
         <TableCell>
           <ReactTooltip />
           <p data-tip={description}>{typeName}</p>

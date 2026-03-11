@@ -65,14 +65,14 @@ class PageHeader extends Component {
       <div>
         <div id='page-header'>
           <div id='indyscanlogo'>
-            <Link href={homeLinkHref} as={homeLinkAs}><a className='menulink' style={{ color: 'darkcyan' }}>
+            <Link href={homeLinkHref} as={homeLinkAs} className='menulink text-primary hover:text-primary/90'>
               <img style={{ height: '7em' }} src="/static/radar.png" alt="Indyscan logo"/>
-            </a></Link>
+            </Link>
           </div>
           <div id='indyscan-caption'>
-            <Link href={homeLinkHref} as={homeLinkAs}><a className='menulink' style={{ color: 'darkcyan' }}>
+            <Link href={homeLinkHref} as={homeLinkAs} className='menulink text-primary hover:text-primary/90'>
               <h1>Indyscan</h1>
-            </a></Link>
+            </Link>
             <div>
               <h2>Hyperledger Indy transaction explorer</h2>
             </div>
@@ -83,7 +83,7 @@ class PageHeader extends Component {
             this.state.networks &&
             <GridRow>
               <GridColumn width={11}>
-                <div style={{ 'display': 'inline', color: 'gray', fontSize: '0.8em', marginRight: '1em' }}>Networks:
+                <div className="inline text-muted-foreground text-sm mr-2">Networks:
                 </div>
                 {this.renderNetworks(this.state.networks || [network], network)}
               </GridColumn>

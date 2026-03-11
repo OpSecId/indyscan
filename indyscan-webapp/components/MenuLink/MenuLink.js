@@ -12,7 +12,7 @@ class MenuLink extends Component {
     let fontSize = '1.24em'
     let color = (active) ? 'darkcyan' : 'black'
     return (
-      <Link href={href} as={as}><a className='menulink' style={{ marginRight: '1.5em', color: color, fontSize: fontSize }}>{this.props.children}</a></Link>
+      <Link href={href} as={as} className='menulink' style={{ marginRight: '1.5em', color: color, fontSize: fontSize }}>{this.props.children}</Link>
     )
   }
 }

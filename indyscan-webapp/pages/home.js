@@ -197,15 +197,17 @@ class HomePage extends Component {
     const isInteractive = (!!this.state.activeWsRoom)
     return (
       <div>
-        <div className="bg-white mb-[-1em]">
+        <header className="border-b border-border pb-6 mb-6">
           <div className="container mx-auto px-4">
             <PageHeader page='home' network={network} baseUrl={baseUrl}/>
           </div>
+        </header>
+        <div className="container mx-auto px-4">
+          <NetworkInfo networkDetails={networkDetails}/>
         </div>
-        <NetworkInfo networkDetails={networkDetails}/>
         <CSSTransition key={network} appear={true} in={true} timeout={300}
                        classNames="txsanimation">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 container mx-auto px-4 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 container mx-auto px-4 mt-8 pb-8">
             <Card>
               <CardHeader className="pb-2">
                 <SubledgerHeader isInteractive={isInteractive} subledger='Domain' progress={scanProgressDomain}/>
@@ -235,7 +237,7 @@ class HomePage extends Component {
             </Card>
           </div>
         </CSSTransition>
-        <div className="container mx-auto px-4 mt-6">
+        <div className="container mx-auto px-4 pb-8">
           <Footer displayVersion={this.props.version}/>
         </div>
       </div>

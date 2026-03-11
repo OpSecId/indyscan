@@ -16,9 +16,7 @@ class Txs extends Component {
     return (
       <Grid>
         <GridRow style={{ marginTop: '0.1em' }}>
-          <span>Something went wrong. <a href='/'>Try again?</a>
-            <Link href={baseUrl} as='/'><a className='menulink'>Agaoin</a></Link>
-          </span>
+          <span>Something went wrong. <Link href={baseUrl} as='/' className='menulink'>Try again?</Link></span>
         </GridRow>
       </Grid>
     )

@@ -85,13 +85,13 @@ class Tx extends Component {
         </GridRow>
         <GridRow>
           <GridColumn width={3} textAlign="center">
-            <Link href={hrefNext} as={asNext}><a style={{ fontSize: '1.2em' }}>Next tx</a></Link>
+            <Link href={hrefNext} as={asNext} style={{ fontSize: '1.2em' }}>Next tx</Link>
           </GridColumn>
           <GridColumn width={10} textAlign="center">
             <h4>{`${network} / ${ledger} / ${seqNo}`}</h4>
           </GridColumn>
           <GridColumn width={3} textAlign="center">
-            <Link href={hrefPrev} as={asPrev}><a style={{ fontSize: '1.2em' }}>Prev tx</a></Link>
+            <Link href={hrefPrev} as={asPrev} style={{ fontSize: '1.2em' }}>Prev tx</Link>
           </GridColumn>
         </GridRow>
         {displayMessage && displayMessage}

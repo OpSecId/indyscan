@@ -36,13 +36,13 @@ class TxPreview extends Component {
       <div className="txitem data-content">
         <div style={{ fontSize: '1.2em' }}>
           <Link href={href} as={as}>
-            <a><span style={{ marginRight: '0.4em', marginBottom: '0.2em' }}>{seqNo}</span></a>
+            <span style={{ marginRight: '0.4em', marginBottom: '0.2em' }}>{seqNo}</span>
           </Link>
           <span>{typeName}</span>
         </div>
         <div style={{ marginTop: '0.6em', fontSize: '0.85em' }}>
           <span style={{ display: 'block' }}><b>From  DID: </b>{fromDidDisplayed}</span>
-          <span style={{ display: 'block', marginBottom: '0.1em' }}><b>Local Time:</b> {txnDateLocalString}</span>
+          <span style={{ display: 'block', marginBottom: '0.1em' }} suppressHydrationWarning><b>Local Time:</b> {txnDateLocalString}</span>
           <TimeAgoText sinceEpoch={sinceEpoch} className='txitem-graytext' style={{ display: 'block' }}/>
         </div>
       </div>

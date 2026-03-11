@@ -51,7 +51,7 @@ class NetworkInfo extends Component {
   render () {
     const tutorialLink = this.getNetworTutorialLink()
     return (
-      <Grid style={{ backgroundColor: 'white', marginTop: '1em' }}>
+      <Grid className="mt-4">
         <GridRow>
           <GridColumn>
             <h1 className="network-header">
