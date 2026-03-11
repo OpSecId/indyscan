@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { getTxCount, getTxs } from 'indyscan-api-client'
 import PageHeader from '../components/PageHeader/PageHeader'
 import { Checkbox, Grid, GridColumn, GridRow, Icon, Input, Label, Pagination, Radio } from 'semantic-ui-react'
-import { getBaseUrl } from '../routing'
+import { getBaseUrl, getBaseUrlForServerFetch } from '../routing'
 import Footer from '../components/Footer/Footer'
 import { getConfigTxNames, getDomainsTxNames, getPoolTxNames } from 'indyscan-txtype'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
@@ -68,11 +68,12 @@ class Txs extends Component {
     const pageSize = (query.pageSize) ? query.pageSize : 50
     const skip = pageSize * (page - 1)
     const baseUrl = getBaseUrl(req)
+    const fetchBase = getBaseUrlForServerFetch(req) || baseUrl
     const filterTxNames = (query.filterTxNames) ? JSON.parse(query.filterTxNames) : []
     const search = query.search
     const sortFromRecent = (query.sortFromRecent) ? query.sortFromRecent : 'true'
-    const indyscanTxs = await getTxs(baseUrl, network, ledger, skip, pageSize, filterTxNames, 'full', search, sortFromRecent)
-    const txCount = await getTxCount(baseUrl, network, ledger, filterTxNames, search)
+    const indyscanTxs = await getTxs(fetchBase, network, ledger, skip, pageSize, filterTxNames, 'full', search, sortFromRecent)
+    const txCount = await getTxCount(fetchBase, network, ledger, filterTxNames, search)
     return {
       indyscanTxs,
       network,

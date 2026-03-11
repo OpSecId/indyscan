@@ -2,7 +2,8 @@
   "env": {
     "INDY_NETWORK": "INDYSCANPOOL",
     "ES_URL": "http://elasticsearch:9200",
-    "ES_INDEX": "txs-indyscanpool"
+    "ES_INDEX": "txs-indyscanpool",
+    "WORKER_TIMING": "SLOW"
   },
   "workersBuildersTemplate": [
     {
@@ -12,7 +13,7 @@
         "genesisPath": "{{{GENESIS_URL}}}",
         "esIndex": "{{{ES_INDEX}}}",
         "esUrl": "{{{ES_URL}}}",
-        "workerTiming": "FAST"
+        "workerTiming": "{{{WORKER_TIMING}}}"
       }
     },
     {
@@ -21,7 +22,7 @@
         "indyNetworkId": "{{{INDY_NETWORK}}}",
         "esUrl": "{{{ES_URL}}}",
         "esIndex": "{{{ES_INDEX}}}",
-        "workerTiming": "FAST"
+        "workerTiming": "{{{WORKER_TIMING}}}"
       }
     }
   ]

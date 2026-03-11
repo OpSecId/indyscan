@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import '../scss/style.scss'
 import { getNetwork, getTxs } from 'indyscan-api-client'
-import { getBaseUrl } from '../routing'
+import { getBaseUrl, getBaseUrlForServerFetch } from '../routing'
 import { Grid, GridColumn, GridRow } from 'semantic-ui-react'
 import PageHeader from '../components/PageHeader/PageHeader'
 import TxPreviewList from '../components/TxPreviewList/TxPreviewList'
@@ -17,16 +17,17 @@ import { SOCKETIO_EVENT } from '../sockets/constants'
 class HomePage extends Component {
   static async getInitialProps ({ req, query }) {
     const baseUrl = getBaseUrl(req)
+    const fetchBase = getBaseUrlForServerFetch(req) || baseUrl
     const { network } = query
-    const featuresRes = await fetch(`${baseUrl}/features`)
+    const featuresRes = await fetch(`${fetchBase}/features`)
     const features = (await featuresRes.json())
-    const versionRes = await fetch(`${baseUrl}/version`)
+    const versionRes = await fetch(`${fetchBase}/version`)
     const version = (await versionRes.json()).version
-    const networkDetails = await getNetwork(baseUrl, network)
+    const networkDetails = await getNetwork(fetchBase, network)
     const [domainTxsRaw, poolTxsRaw, configTxsRaw] = await Promise.all([
-      getTxs(baseUrl, network, 'domain', 0, 13, [], 'serialized'),
-      getTxs(baseUrl, network, 'pool', 0, 13, [], 'serialized'),
-      getTxs(baseUrl, network, 'config', 0, 13, [], 'serialized')
+      getTxs(fetchBase, network, 'domain', 0, 13, [], 'serialized'),
+      getTxs(fetchBase, network, 'pool', 0, 13, [], 'serialized'),
+      getTxs(fetchBase, network, 'config', 0, 13, [], 'serialized')
     ])
     const domainTxs = Array.isArray(domainTxsRaw) ? domainTxsRaw : []
     const poolTxs = Array.isArray(poolTxsRaw) ? poolTxsRaw : []

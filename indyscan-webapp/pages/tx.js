@@ -7,7 +7,7 @@ import JSONPretty from 'react-json-pretty'
 import top100 from '../components/palettes'
 import Link from 'next/link'
 import Router from 'next/router'
-import { getBaseUrl, getTxLinkData } from '../routing'
+import { getBaseUrl, getBaseUrlForServerFetch, getTxLinkData } from '../routing'
 import Footer from '../components/Footer/Footer'
 import toCanonicalJson from 'canonical-json'
 import TxDisplay from '../components/TxDisplay/TxDisplay'
@@ -16,10 +16,11 @@ class Tx extends Component {
   static async getInitialProps ({ req, query }) {
     const { network, ledger, seqNo } = query
     const baseUrl = getBaseUrl(req)
+    const fetchBase = getBaseUrlForServerFetch(req) || baseUrl
     let displayMessage
     let indyscanTx
     try {
-      indyscanTx = await getTx(baseUrl, network, ledger, seqNo, 'full')
+      indyscanTx = await getTx(fetchBase, network, ledger, seqNo, 'full')
     } catch (e) {
       displayMessage = <Message negative>
         <Message.Header>This transaction is not yet available</Message.Header>

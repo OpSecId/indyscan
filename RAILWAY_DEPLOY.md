@@ -46,6 +46,8 @@ Minimal deploy: **2 services** (Elasticsearch + IndyScan API+Webapp in one conta
 
 Use the generated public URL for the IndyScan service. The explorer will be **empty** until you run the daemon (see Optional: Daemon below)—the app does not run the daemon.
 
+**Using the latest app image:** Each push to `railway-deploy` triggers a new build from your latest commit; the image is built from the repo at that commit, so the running app is up to date. If you changed code but don’t see it after a deploy, trigger **Redeploy** from the service’s Deployments tab. To force a clean build with no cache, use Railway’s **Clear build cache and redeploy** (or equivalent) in the service settings or deploy menu.
+
 ---
 
 ## Option B: Docker Compose (one project, two containers)
@@ -79,10 +81,13 @@ To **populate** the explorer:
    - **`ES_URL`** = your Elasticsearch private URL (e.g. `http://elasticsearch.railway.internal:9200`).
    - **`GENESIS_URL`** = URL of the ledger’s genesis file (e.g. `http://von-network.railway.internal:8080/genesis`). The daemon downloads it at startup. **Important:** The genesis file lists the pool’s node addresses. The daemon must be able to connect to those **node ports** (9701, 9703, 9705, 9707) on that host—see **PoolLedgerTimeout** in Troubleshooting if the daemon times out connecting to the ledger.
    - **`WORKER_CONFIGS`** = **`app-configs/railway.json`** (uses `{{{GENESIS_URL}}}` and `{{{ES_URL}}}` from env). Optionally set **`ES_INDEX`** if you use a different index name (default in that config: `txs-indyscanpool`).
+   - **`WORKER_TIMING`** (optional) = **`SLOW`** | **`MEDIUM`** | **`FAST`** | **`TURBO`**. How often the daemon polls when idle; default in config is `SLOW`. Set to `FAST` for quicker catch-up, or keep `SLOW` to reduce cost.
 
 No genesis file mount or build needed when using `GENESIS_URL`.
 
 Until the daemon has run and synced, the explorer will show no data.
+
+**Daemon resource use and cost:** When the ledger has no new transactions, the daemon keeps polling (you’ll see “Transaction X not available” in logs). It **does** keep using CPU and network in small bursts each cycle, so leaving it on **FAST** 24/7 can add cost. The **Railway config** (`app-configs/railway.json`) defaults to the **SLOW** timing preset (30s between checks when idle). You can override it without changing the repo by setting the **`WORKER_TIMING`** env var on the daemon service to one of: **`SLOW`** (default in config), **`MEDIUM`**, **`FAST`**, **`TURBO`**. Presets (in daemon code): **SLOW** = 30s when no tx / 30s after success; **MEDIUM** = 9s / 4s; **FAST** = 3s / 1s; **TURBO** = 1.5s / 0.5s.
 
 ---
 
