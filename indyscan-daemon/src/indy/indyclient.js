@@ -1,11 +1,45 @@
 const indy = require('vdr-tools')
 const logger = require('../logging/logger-main')
 const fs = require('fs')
+const path = require('path')
+const https = require('https')
+const http = require('http')
 
 const LEDGER_NAME_TO_CODE = {
   pool: '0',
   domain: '1',
   config: '2'
+}
+
+const GENESIS_URL_PREFIX = /^https?:\/\//
+
+async function resolveGenesisPath (ledgerName, genesisPath) {
+  if (!genesisPath || typeof genesisPath !== 'string') {
+    return genesisPath
+  }
+  const trimmed = genesisPath.trim()
+  if (!GENESIS_URL_PREFIX.test(trimmed)) {
+    return trimmed
+  }
+  const protocol = trimmed.startsWith('https') ? https : http
+  return new Promise((resolve, reject) => {
+    const req = protocol.get(trimmed, (res) => {
+      if (res.statusCode !== 200) {
+        reject(Error(`Genesis URL ${trimmed} returned ${res.statusCode}`))
+        return
+      }
+      const tmpDir = process.env.TMPDIR || '/tmp'
+      const filePath = path.join(tmpDir, `indyscan-genesis-${ledgerName}-${Date.now()}.txn`)
+      const file = fs.createWriteStream(filePath)
+      res.pipe(file)
+      file.on('finish', () => {
+        file.close()
+        logger.warn(`Downloaded genesis from URL to ${filePath}.`, { metadaemon: { indyNetworkId: ledgerName, componentType: 'indy-client' } })
+        resolve(filePath)
+      })
+    })
+    req.on('error', reject)
+  })
 }
 
 async function registerLedger (ledgerName, genesisFilePath) {
@@ -46,8 +80,9 @@ async function createIndyClient (indyNetworkId, ledgerName, genesisPath = undefi
       ' and because neither genesis file for this ledger was supplied, it cannot be added.' +
       ` Currently known pools are: ${JSON.stringify(await getListOfRegisteredLedgers())}`)
     }
-    logger.warn(`Ledger ${ledgerName} is being registered using genesis file: ${genesisPath}.`, loggerMetadata)
-    await registerLedger(ledgerName, genesisPath)
+    const resolvedPath = await resolveGenesisPath(ledgerName, genesisPath)
+    logger.warn(`Ledger ${ledgerName} is being registered using genesis: ${genesisPath}.`, loggerMetadata)
+    await registerLedger(ledgerName, resolvedPath)
   }
   logger.info(`Connecting to ledger ${ledgerName}.`, loggerMetadata)
   const poolHandle = await indy.openPoolLedger(ledgerName)

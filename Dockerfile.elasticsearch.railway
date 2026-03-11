@@ -1,0 +1,10 @@
+# Elasticsearch 7.17 with entrypoint that fixes volume permissions (e.g. Railway).
+# Use this when you mount a volume at /usr/share/elasticsearch/data and get AccessDeniedException.
+FROM elasticsearch:7.17.9
+
+USER root
+COPY scripts/elasticsearch-docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["elasticsearch"]

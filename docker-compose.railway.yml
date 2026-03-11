@@ -1,15 +1,25 @@
 # Minimal IndyScan for Railway: 2 services (Elasticsearch + API+Webapp).
 # Deploy: connect repo to Railway, use this compose or add ES as separate service.
+# Elasticsearch runs in development mode (transport on loopback) so bootstrap checks
+# (vm.max_map_count, discovery) only warn and do not block startup.
 version: '3.8'
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    # Use custom image so a mounted volume has correct permissions (see Dockerfile.elasticsearch.railway).
+    build:
+      context: .
+      dockerfile: Dockerfile.elasticsearch.railway
+    image: indyscan-elasticsearch-railway:7.17.9
     environment:
-      discovery.type: single-node
-      xpack.security.enabled: "false"
-      "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-    # Railway: add a volume for persistence if desired
+      - discovery.type=single-node
+      - transport.host=127.0.0.1
+      - http.host=0.0.0.0
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    # Dev mode (transport.host=127.0.0.1) means bootstrap checks are warnings only; no vm.max_map_count change needed.
 
   app:
     build:
@@ -22,3 +32,6 @@ services:
       - "3707:3707"
     depends_on:
       - elasticsearch
+
+volumes:
+  elasticsearch-data:

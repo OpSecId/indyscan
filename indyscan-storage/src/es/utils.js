@@ -46,6 +46,7 @@ async function createEsIndex (esClient, esIndex, replicaCount, logger = createWi
 async function searchOneDocument (esClient, esIndex, query) {
   const searchPayloadd = {
     index: esIndex,
+    ignore_unavailable: true,
     body: { query }
   }
   const { body } = await esClient.search(searchPayloadd)

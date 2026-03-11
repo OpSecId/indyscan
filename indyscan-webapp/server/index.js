@@ -49,6 +49,10 @@ async function startServer () {
         return res.status(200).send({ websockets: !!appConfig.DAEMON_WS_URL })
       })
 
+      server.get('/favicon.ico', (req, res) => {
+        res.status(204).end()
+      })
+
       server.get('/home/:network', (req, res) => {
         const mergedQuery = Object.assign({}, req.query, req.params)
         logger.info(`Custom express routing handler: /home/:network\nmerged query: ${JSON.stringify(mergedQuery)}`)

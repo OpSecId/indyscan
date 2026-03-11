@@ -35,6 +35,7 @@ function createStorageReadEs (esClient, esIndex) {
     const query = esAndFilters(createSubledgerQuery(subledger), queries)
     const request = {
       index: esIndex,
+      ignore_unavailable: true,
       body: { query }
     }
     logger.debug(`${whoami} Submitting count txs request: ${JSON.stringify(request, null, 2)}`)
@@ -97,6 +98,7 @@ function createStorageReadEs (esClient, esIndex) {
       from: skip,
       size: limit,
       index: esIndex,
+      ignore_unavailable: true,
       body: { query, sort }
     }
     const body = await executeEsSearch(searchRequest)

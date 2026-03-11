@@ -54,6 +54,9 @@ async function run () {
       const workersConfig = fs.readFileSync(workerConfigPath)
       const { workersBuildersTemplate, env } = JSON.parse(workersConfig)
       env.cfgdir = path.dirname(workerConfigPath)
+      if (process.env.GENESIS_URL != null) env.GENESIS_URL = process.env.GENESIS_URL
+      if (process.env.ES_URL != null) env.ES_URL = process.env.ES_URL
+      if (process.env.ES_INDEX != null) env.ES_INDEX = process.env.ES_INDEX
       const workerBuilders = JSON.parse(Mustache.render(JSON.stringify(workersBuildersTemplate), env)) // render template
       for (const workerBuilder of workerBuilders) { // one file can define multiple workers
         const { builder, params } = workerBuilder
