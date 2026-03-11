@@ -53,4 +53,5 @@ LABEL org.label-schema.vcs-url="https://github.com/Patrik-Stas/indyscan"
 
 WORKDIR /home/indyscan/indyscan-daemon
 
-CMD npm run start
+ENV NODE_ENV=production
+CMD ["node", "src/index.js"]
